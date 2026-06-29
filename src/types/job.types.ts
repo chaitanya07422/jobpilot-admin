@@ -18,6 +18,7 @@ export interface AdminJob {
   discoveredAt: string
   lastSeenAt: string
   closedAt?: string
+  qdrantSyncedAt?: string
   createdAt: string
   updatedAt: string
 }
@@ -34,6 +35,12 @@ export interface JobSeedResult {
   created: number
   updated: number
   skipped: number
+}
+
+export interface JobEmbedResult {
+  synced: number
+  skipped: number
+  failed: number
 }
 
 export interface CreateJobPayload {

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { Database, Plus } from 'lucide-react'
+import { Database, Layers, Plus } from 'lucide-react'
 import { adminJobsApi } from '@/api/jobs.api'
 import { useState } from 'react'
 
@@ -24,6 +24,13 @@ export default function JobsListPage() {
     },
   })
 
+  const embedMutation = useMutation({
+    mutationFn: adminJobsApi.embed,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-jobs'] })
+    },
+  })
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -34,6 +41,15 @@ export default function JobsListPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => embedMutation.mutate()}
+            disabled={embedMutation.isPending}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-panel-secondary disabled:opacity-50"
+          >
+            <Layers className="h-4 w-4" />
+            {embedMutation.isPending ? 'Embedding…' : 'Embed all jobs'}
+          </button>
           <button
             type="button"
             onClick={() => seedMutation.mutate()}
@@ -70,6 +86,13 @@ export default function JobsListPage() {
         ))}
       </div>
 
+      {embedMutation.isSuccess && (
+        <p className="text-sm text-green">
+          Embed done: {embedMutation.data.synced} synced, {embedMutation.data.skipped} skipped,{' '}
+          {embedMutation.data.failed} failed
+        </p>
+      )}
+
       {seedMutation.isSuccess && (
         <p className="text-sm text-green">
           Seed done: {seedMutation.data.created} created, {seedMutation.data.updated} updated,{' '}
@@ -98,13 +121,14 @@ export default function JobsListPage() {
                   <th className="px-4 py-3 font-medium">Location</th>
                   <th className="px-4 py-3 font-medium">Source</th>
                   <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium">Embedded</th>
                   <th className="px-4 py-3 font-medium" />
                 </tr>
               </thead>
               <tbody>
                 {data.items.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-muted">
+                    <td colSpan={7} className="px-4 py-8 text-center text-muted">
                       No jobs yet. Seed sample jobs or add one manually.
                     </td>
                   </tr>
@@ -127,6 +151,11 @@ export default function JobsListPage() {
                         >
                           {job.status}
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-muted text-xs">
+                        {job.qdrantSyncedAt
+                          ? new Date(job.qdrantSyncedAt).toLocaleDateString()
+                          : '—'}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <Link to={`/jobs/${job.id}`} className="text-cyan hover:underline">

@@ -4,6 +4,7 @@ import type {
   AdminJobList,
   CreateJobPayload,
   JobSeedResult,
+  JobEmbedResult,
   JobCatalogStatus,
   UpdateJobPayload,
 } from '@/types/job.types'
@@ -39,4 +40,6 @@ export const adminJobsApi = {
     adminFetch<null>(`/admin/jobs/${id}`, { method: 'DELETE' }),
 
   seed: () => adminFetch<JobSeedResult>('/admin/jobs/seed', { method: 'POST' }),
+
+  embed: () => adminFetch<JobEmbedResult>('/admin/jobs/embed', { method: 'POST' }),
 }
