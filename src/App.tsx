@@ -5,6 +5,8 @@ import { isAdminAuthenticated } from '@/lib/adminKey'
 import LoginPage from '@/pages/Login'
 import JobsListPage from '@/pages/JobsList'
 import JobFormPage from '@/pages/JobForm'
+import SourcesListPage from '@/pages/SourcesList'
+import SourceFormPage from '@/pages/SourceForm'
 
 const queryClient = new QueryClient()
 
@@ -28,6 +30,9 @@ function App() {
             <Route path="/jobs" element={<JobsListPage />} />
             <Route path="/jobs/new" element={<JobFormPage />} />
             <Route path="/jobs/:id" element={<JobFormPage />} />
+            <Route path="/sources" element={<SourcesListPage />} />
+            <Route path="/sources/new" element={<SourceFormPage />} />
+            <Route path="/sources/:id" element={<SourceFormPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
