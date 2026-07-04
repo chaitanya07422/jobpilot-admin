@@ -2,6 +2,11 @@ import { getAdminKey } from '@/lib/adminKey'
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
+/** In dev, use Vite proxy (`/api`) so Bull Board cookies work in the iframe */
+function apiBase(): string {
+  return import.meta.env.DEV ? '' : API_URL.replace(/\/$/, '')
+}
+
 export class ApiError extends Error {
   status: number
 
@@ -29,14 +34,22 @@ export async function adminFetch<T>(
     throw new ApiError('Not authenticated', 401)
   }
 
-  const res = await fetch(`${API_URL}/api/v1${path}`, {
+  const res = await fetch(`${apiBase()}/api/v1${path}`, {
     ...options,
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-Admin-Key': adminKey,
       ...(options.headers ?? {}),
     },
   })
+
+  if (res.status === 204) {
+    if (!res.ok) {
+      throw new ApiError(`Request failed (${res.status})`, res.status)
+    }
+    return undefined as T
+  }
 
   const body = (await res.json().catch(() => ({}))) as ApiEnvelope<T>
 

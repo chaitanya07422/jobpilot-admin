@@ -7,6 +7,7 @@ import JobsListPage from '@/pages/JobsList'
 import JobFormPage from '@/pages/JobForm'
 import SourcesListPage from '@/pages/SourcesList'
 import SourceFormPage from '@/pages/SourceForm'
+import QueuesDashboardPage from '@/pages/QueuesDashboard'
 
 const queryClient = new QueryClient()
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/sources" element={<SourcesListPage />} />
             <Route path="/sources/new" element={<SourceFormPage />} />
             <Route path="/sources/:id" element={<SourceFormPage />} />
+            <Route path="/queues" element={<QueuesDashboardPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

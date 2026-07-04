@@ -5,6 +5,7 @@ import { clearAdminKey, isAdminAuthenticated } from '@/lib/adminKey'
 const navItems = [
   { to: '/jobs', label: 'Jobs' },
   { to: '/sources', label: 'Sources' },
+  { to: '/queues', label: 'Queues' },
 ]
 
 export function AdminLayout() {
